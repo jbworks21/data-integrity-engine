@@ -1,6 +1,7 @@
 # data_integrity_engine/crypto_log.py
 
 import os
+import sys
 import base64
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
@@ -29,7 +30,7 @@ def encrypt_message(message: str, password: str) -> bytes:
     
     ciphertext = encryptor.update(message.encode()) + encryptor.finalize()
     
-    # Pack salt, iv, tag, and ciphertext into a single deliverable
+    # Pack salt, iv, tag, and ciphertext into a single deliverable bytes payload
     return salt + iv + encryptor.tag + ciphertext
 
 def decrypt_message(packed_data: bytes, password: str) -> str:
@@ -51,14 +52,30 @@ def decrypt_message(packed_data: bytes, password: str) -> str:
         return "[ERROR] Decryption failed. Invalid key or corrupted payload."
 
 if __name__ == "__main__":
-    print("--- Cryptographic Engine Online ---")
-    secret_phrase = "System architecture verified. Ground reality locked."
-    master_pass = "ControlTheNarrative2026"
+    # Ensure minimum required positional arguments are provided via CLI
+    if len(sys.argv) < 4:
+        print("\n[USAGE ERROR] Explicit parameters required:")
+        print("  Encrypt: python crypto_log.py encrypt 'your message' 'your_password'")
+        print("  Decrypt: python crypto_log.py decrypt 'raw_ciphertext_string' 'your_password'")
+        sys.exit(1)
+        
+    action = sys.argv[1].lower()
+    payload = sys.argv[2]
+    password = sys.argv[3]
     
-    # Test execution
-    encrypted_payload = encrypt_message(secret_phrase, master_pass)
-    print(f"\n[CIPHERTEXT RAW DATA]:\n{base64.b64encode(encrypted_payload).decode()}")
-    
-    decrypted_text = decrypt_message(encrypted_payload, master_pass)
-    print(f"\n[DECRYPTED PLAINTEXT]:\n{decrypted_text}")
-
+    if action == "encrypt":
+        encrypted_bytes = encrypt_message(payload, password)
+        # Encode binary payload to a clean, copy-pasteable alphanumeric text string
+        encoded_output = base64.b64encode(encrypted_bytes).decode()
+        print(f"\n[CIPHERTEXT]\n{encoded_output}")
+        
+    elif action == "decrypt":
+        try:
+            # Decode the text string back into raw bytes prior to decryption
+            raw_bytes = base64.b64decode(payload)
+            decrypted_output = decrypt_message(raw_bytes, password)
+            print(f"\n[DECRYPTED PLAINTEXT]\n{decrypted_output}")
+        except Exception as e:
+            print(f"[ERROR] Invalid data stream or corrupted padding: {str(e)}")
+    else:
+        print(f"[ERROR] Unknown instruction protocol: {action}")
