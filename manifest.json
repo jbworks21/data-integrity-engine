@@ -1,6 +1,6 @@
 {
     "system_metadata": {
-        "generated_at_utc": "2026-11-02T00:29:05.670870",
+        "generated_at_utc": "2026-11-02T00:33:54.616891",
         "target_path": "/data/data/com.termux/files/home/data_integrity_engine"
     },
     "records": {
@@ -35,6 +35,26 @@
         "network_traffic.log": {
             "sha256": "393c690fb736411f718de03ee23201461e740491828e918a8d4def7a4f03c7c4",
             "size_bytes": 475
+        },
+        "test_engine.py": {
+            "sha256": "f38248d6fea0741a7292c7d6b5eb312c5d68fe1675084f132351f882bd2ae792",
+            "size_bytes": 2796
+        },
+        "__pycache__/test_engine.cpython-313.pyc": {
+            "sha256": "dda236fa08905f4b424bc1808133fa404d419d2ffac696622fbc1bf80827a244",
+            "size_bytes": 4692
+        },
+        "__pycache__/core.cpython-313.pyc": {
+            "sha256": "9f5fba7c441a5dbab1009c55952b3a65809e70ae2ddb16a551444b755277c000",
+            "size_bytes": 5474
+        },
+        "__pycache__/crypto_log.cpython-313.pyc": {
+            "sha256": "ddc7299d0fe3552e4fb323ef779f08021a509d02db8b1436ea98fa4a3e806b0d",
+            "size_bytes": 6962
+        },
+        "__pycache__/network_monitor.cpython-313.pyc": {
+            "sha256": "53c875ace7e92085ad590dbd4e8b021de498cb2e4bab7c6e68cee0e4fef83bd3",
+            "size_bytes": 3470
         }
     }
 }
