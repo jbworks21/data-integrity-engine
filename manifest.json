@@ -1,6 +1,6 @@
 {
     "system_metadata": {
-        "generated_at_utc": "2026-11-02T00:23:52.470746",
+        "generated_at_utc": "2026-11-02T00:29:05.670870",
         "target_path": "/data/data/com.termux/files/home/data_integrity_engine"
     },
     "records": {
@@ -27,6 +27,14 @@
         "archive_data.json": {
             "sha256": "b06197c1a6ba5ab16ed63d7c5fadf3fa471a4961f0fd03d9cd83208a26ec8224",
             "size_bytes": 1009
+        },
+        "network_monitor.py": {
+            "sha256": "c70d1e348216b4266fc1e94311867fd3d1d01535cd5bfac144c084236732d855",
+            "size_bytes": 3133
+        },
+        "network_traffic.log": {
+            "sha256": "393c690fb736411f718de03ee23201461e740491828e918a8d4def7a4f03c7c4",
+            "size_bytes": 475
         }
     }
 }
