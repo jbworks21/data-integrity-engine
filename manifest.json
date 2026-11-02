@@ -1,6 +1,6 @@
 {
     "system_metadata": {
-        "generated_at_utc": "2026-11-01T21:00:17.859196",
+        "generated_at_utc": "2026-11-01T21:32:35.026548",
         "target_path": "/data/data/com.termux/files/home/data_integrity_engine"
     },
     "records": {
@@ -9,16 +9,16 @@
             "size_bytes": 1070
         },
         "core.py": {
-            "sha256": "393a1931c0843bfc6c070a5449a306f6955334c5a3cdc2c93d1f43ed20e2756c",
-            "size_bytes": 4825
+            "sha256": "4c7162cfcf4c07e6713d93e60d985f1b88c0ac865f5dd1a0b563ea88e397919b",
+            "size_bytes": 5051
         },
         "audit.sh": {
             "sha256": "6df6b560640c4e7e124499c2884a7a4d6a8dd9e4c5b917f5517c82c9277e7988",
             "size_bytes": 744
         },
         "crypto_log.py": {
-            "sha256": "c9992eee823cffc8e2bd0ce7d5cef9ae18edc60280fc9d6f4a9e68b059b384fd",
-            "size_bytes": 3040
+            "sha256": "dd5ce714a1a60637d47e6d24f0ca2cd7978d2831d98a627938b4093a19908c8b",
+            "size_bytes": 5091
         }
     }
 }

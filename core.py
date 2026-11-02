@@ -32,6 +32,7 @@ def generate_system_manifest(target_directory):
     """
     Scans a directory, calculates hashes for all non-hidden files,
     and returns a structured, timestamped manifest dictionary.
+    Excludes dynamic relational database files from tracking.
     """
     manifest = {
         "system_metadata": {
@@ -50,6 +51,10 @@ def generate_system_manifest(target_directory):
             continue
             
         for file_name in files:
+            # Explicitly exclude dynamic databases that change on entry logging
+            if file_name.endswith('.db'):
+                continue
+                
             full_path = os.path.join(root, file_name)
             relative_path = os.path.relpath(full_path, target_directory)
             
