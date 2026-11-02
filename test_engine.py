@@ -56,8 +56,8 @@ class TestDataIntegrityEngine(unittest.TestCase):
     def test_network_monitor_anomaly(self):
         """Verify regular expression parsing and intrusion anomaly detection thresholds."""
         mock_logs = [
-            "10.0.0.45 - - [2026-11-01T21:01:15] 'POST /api/v1/auth/login HTTP/1.1' 401 128",
-            "10.0.0.45 - - [2026-11-01T21:01:18] 'POST /api/v1/auth/login HTTP/1.1' 401 128"
+            '10.0.0.45 - - [2026-11-01T21:01:15] "POST /api/v1/auth/login HTTP/1.1" 401 128',
+            '10.0.0.45 - - [2026-11-01T21:01:18] "POST /api/v1/auth/login HTTP/1.1" 401 128'
         ]
         report = parse_and_analyze_logs(mock_logs)
         self.assertEqual(report["anomalies_detected"], 1)
