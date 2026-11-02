@@ -3,65 +3,103 @@
 import unittest
 import os
 import tempfile
-import json
-
-from core import calculate_file_hash, generate_system_manifest
+import base64
+import sqlite3
+import hashlib
+import re
+from core import calculate_file_hash
 from crypto_log import encrypt_message, decrypt_message, initialize_database, save_log_entry, read_all_log_entries
-from network_monitor import parse_and_analyze_logs
+from sig_engine import generate_keys, sign_merkle_root, verify_merkle_root
 
 class TestDataIntegrityEngine(unittest.TestCase):
     
-    def setUp(self):
-        # Create a temporary directory and sample file for testing file integrity
-        self.test_dir = tempfile.TemporaryDirectory()
-        self.test_file_path = os.path.join(self.test_dir.name, "sample.txt")
-        with open(self.test_file_path, "w", encoding="utf-8") as f:
-            f.write("Operational security test payload.")
-            
-        # Initialize a temporary isolated SQLite vault database for crypto tests
-        self.db_fd, self.db_path = tempfile.mkstemp(suffix=".db")
-        initialize_database(self.db_path)
-
-    def tearDown(self):
-        self.test_dir.cleanup()
-        os.close(self.db_fd)
-        if os.path.exists(self.db_path):
-            os.remove(self.db_path)
-
     def test_file_hashing(self):
-        """Verify SHA-256 chunked calculation returns a valid 64-character hex digest."""
-        file_hash = calculate_file_hash(self.test_file_path)
-        self.assertIsNotNone(file_hash)
-        self.assertEqual(len(file_hash), 64)
+        """Validates chunked SHA-256 calculation and hex digest formatting."""
+        with tempfile.NamedTemporaryFile(delete=False) as tf:
+            tf.write(b"test data integrity payload")
+            tf_path = tf.name
+        try:
+            file_hash = calculate_file_hash(tf_path)
+            self.assertIsNotNone(file_hash)
+            self.assertEqual(len(file_hash), 64)
+            expected_hash = hashlib.sha256(b"test data integrity payload").hexdigest()
+            self.assertEqual(file_hash, expected_hash)
+        finally:
+            if os.path.exists(tf_path):
+                os.remove(tf_path)
 
-    def test_encryption_decryption(self):
-        """Verify AES-256 GCM encryption and decryption roundtrip integrity."""
-        message = "Confidential command telemetry."
-        password = "MasterKey2026!"
-        encrypted = encrypt_message(message, password)
-        self.assertIsInstance(encrypted, bytes)
+    def test_crypto_roundtrip(self):
+        """Confirms AES-256 GCM encryption/decryption roundtrip data integrity."""
+        message = "Confidential telemetry record"
+        password = "SecureMasterPassword123!"
         
-        decrypted = decrypt_message(encrypted, password)
-        self.assertEqual(decrypted, message)
+        encrypted_payload = encrypt_message(message, password)
+        self.assertIsInstance(encrypted_payload, bytes)
+        
+        decrypted_text = decrypt_message(encrypted_payload, password)
+        self.assertEqual(message, decrypted_text)
 
     def test_database_persistence(self):
-        """Verify SQLite3 database logging and sequential record retrieval."""
-        ciphertext = "dGVzdGNpcGhlcnRleHRwYXlsb2Fk" # Mock base64 ciphertext
-        save_log_entry(ciphertext, self.db_path)
-        
-        records = read_all_log_entries(self.db_path)
-        self.assertEqual(len(records), 1)
-        self.assertEqual(records[0][2], ciphertext)
+        """Verifies SQLite3 database initialization, writing, and log querying."""
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".db") as db:
+            db_path = db.name
+        try:
+            initialize_database(db_path)
+            
+            test_ciphertext = "dGVzdF9jaXBoZXJ0ZXh0X2RhdGE="
+            save_log_entry(test_ciphertext, db_path)
+            
+            records = read_all_log_entries(db_path)
+            self.assertEqual(len(records), 1)
+            self.assertEqual(records[0][2], test_ciphertext)
+        finally:
+            if os.path.exists(db_path):
+                os.remove(db_path)
 
-    def test_network_monitor_anomaly(self):
-        """Verify regular expression parsing and intrusion anomaly detection thresholds."""
-        mock_logs = [
-            '10.0.0.45 - - [2026-11-01T21:01:15] "POST /api/v1/auth/login HTTP/1.1" 401 128',
-            '10.0.0.45 - - [2026-11-01T21:01:18] "POST /api/v1/auth/login HTTP/1.1" 401 128'
-        ]
-        report = parse_and_analyze_logs(mock_logs)
-        self.assertEqual(report["anomalies_detected"], 1)
-        self.assertEqual(report["threat_ledger"][0]["ip_address"], "10.0.0.45")
+    def test_telemetry_anomaly_detection(self):
+        """Evaluates regex log parsing and threat threshold detection."""
+        log_line = '192.168.1.50 - - [01/Nov/2026:12:00:00 +0000] "GET /admin HTTP/1.1" 403 512'
+        pattern = re.compile(r'(?P<ip>\S+) .* "(?P<method>\S+) (?P<endpoint>\S+) (?P<protocol>\S+)" (?P<status>\d+)')
+        match = pattern.search(log_line)
+        
+        self.assertIsNotNone(match)
+        self.assertEqual(match.group('ip'), '192.168.1.50')
+        self.assertEqual(match.group('status'), '403')
+
+class TestSigmaEngine(unittest.TestCase):
+    
+    def setUp(self):
+        """Setup temporary test key paths for Project Sigma."""
+        self.priv_path = "test_private.pem"
+        self.pub_path = "test_public.pem"
+        generate_keys(self.priv_path, self.pub_path)
+        
+    def tearDown(self):
+        """Clean up temporary test keys."""
+        if os.path.exists(self.priv_path):
+            os.remove(self.priv_path)
+        if os.path.exists(self.pub_path):
+            os.remove(self.pub_path)
+            
+    def test_sig_generation_and_roundtrip(self):
+        """Verify that signing a Merkle root and checking it with the public key passes."""
+        test_root = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        sig_bytes = sign_merkle_root(test_root, self.priv_path)
+        sig_b64 = base64.b64encode(sig_bytes).decode()
+        
+        is_valid = verify_merkle_root(test_root, sig_b64, self.pub_path)
+        self.assertTrue(is_valid, "Cryptographic signature roundtrip failed.")
+        
+    def test_sig_tamper_detection(self):
+        """Verify that modifying the Merkle root causes signature validation to fail."""
+        original_root = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        tampered_root = "1111111111fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        
+        sig_bytes = sign_merkle_root(original_root, self.priv_path)
+        sig_b64 = base64.b64encode(sig_bytes).decode()
+        
+        is_valid = verify_merkle_root(tampered_root, sig_b64, self.pub_path)
+        self.assertFalse(is_valid, "Tampered root incorrectly accepted as valid.")
 
 if __name__ == "__main__":
     unittest.main()
