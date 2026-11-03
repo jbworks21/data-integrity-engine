@@ -1,6 +1,6 @@
 {
     "system_metadata": {
-        "generated_at_utc": "2026-11-03T01:52:39.333919",
+        "generated_at_utc": "2026-11-03T02:58:52.488786",
         "target_path": "/data/data/com.termux/files/home/data_integrity_engine"
     },
     "records": {
@@ -81,8 +81,8 @@
             "size_bytes": 2882
         },
         "pqc_migration.py": {
-            "sha256": "e754a2fe00294834872e8f56b426baba0dfa8f679c99997c1b42c65077859d9f",
-            "size_bytes": 8642
+            "sha256": "b566b4d7ecd07390c64d71caa7546f60a57af9a502b1de6d4bcc1cc5e891f36d",
+            "size_bytes": 8685
         },
         "sigma_classical_private.pem": {
             "sha256": "5de4a41425fc86a6ab4f0012984109e8468e858c75756a8c4b0f720236aa798a",
@@ -92,12 +92,16 @@
             "sha256": "5e50384cbaff72cee9fcde3539249f10d62e8435bb24047c0a9de89b5c6db56d",
             "size_bytes": 48
         },
+        "async_monitor.py": {
+            "sha256": "d6df07e27ba78cfedd6b3512dbac10f099490b18a5bfb12360c71239e30a9309",
+            "size_bytes": 6516
+        },
         "__pycache__/test_engine.cpython-313.pyc": {
             "sha256": "fe3f3ce460b26ca60e17eed2290a13be8a86136db39e789d94cbda3a4598d06a",
             "size_bytes": 6152
         },
         "__pycache__/core.cpython-313.pyc": {
-            "sha256": "f86a750ccc12cf0ee4e1691e982a805b193d74d4181793e007d317f2af716384",
+            "sha256": "e7952299455bdc26da8cfc8f4226decdf9e367c9685b4d99b49219c882f1f7f0",
             "size_bytes": 5474
         },
         "__pycache__/crypto_log.cpython-313.pyc": {
@@ -119,6 +123,10 @@
         "__pycache__/sig_engine_pqc.cpython-313.pyc": {
             "sha256": "7f2a3a7cca4ed5741c1c52ee27b029482cabcf27ab8f667ef46667307c985dcc",
             "size_bytes": 3014
+        },
+        "__pycache__/pqc_migration.cpython-313.pyc": {
+            "sha256": "49ce55c4e2bd80d5db5b5b18a3a7e31e5f5fad56f375324cdcdd6941c2e8d79a",
+            "size_bytes": 9556
         }
     }
 }
