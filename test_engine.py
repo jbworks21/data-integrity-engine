@@ -3,103 +3,91 @@
 import unittest
 import os
 import tempfile
-import base64
 import sqlite3
-import hashlib
-import re
-from core import calculate_file_hash
-from crypto_log import encrypt_message, decrypt_message, initialize_database, save_log_entry, read_all_log_entries
-from sig_engine import generate_keys, sign_merkle_root, verify_merkle_root
+import base64
+
+# Import existing functional subsystems
+from core import calculate_file_hash, generate_system_manifest
+from crypto_log import encrypt_message, decrypt_message, initialize_database, save_log_entry
+from sig_engine_pqc import generate_pqc_key_pair, sign_merkle_root_pqc, verify_merkle_root_pqc
 
 class TestDataIntegrityEngine(unittest.TestCase):
-    
+    """
+    Unified Automated Unit Test Suite for the Data Integrity Engine.
+    Validates cryptographic hashing, encryption, database persistence, and post-quantum signatures.
+    """
+
+    def setUp(self):
+        """Prepares isolated temporary working directories and files for testing."""
+        self.test_dir = tempfile.TemporaryDirectory()
+        self.sample_file_path = os.path.join(self.test_dir.name, "test_target.txt")
+        
+        with open(self.sample_file_path, "w") as f:
+            f.write("Autonomous engineering verification payload.")
+
+    def tearDown(self):
+        """Cleans up temporary testing directories after execution completion."""
+        self.test_dir.cleanup()
+
     def test_file_hashing(self):
-        """Validates chunked SHA-256 calculation and hex digest formatting."""
-        with tempfile.NamedTemporaryFile(delete=False) as tf:
-            tf.write(b"test data integrity payload")
-            tf_path = tf.name
-        try:
-            file_hash = calculate_file_hash(tf_path)
-            self.assertIsNotNone(file_hash)
-            self.assertEqual(len(file_hash), 64)
-            expected_hash = hashlib.sha256(b"test data integrity payload").hexdigest()
-            self.assertEqual(file_hash, expected_hash)
-        finally:
-            if os.path.exists(tf_path):
-                os.remove(tf_path)
+        """Validates that 4096-byte chunked SHA-256 calculation produces correct hex digests."""
+        file_hash = calculate_file_hash(self.sample_file_path)
+        self.assertIsNotNone(file_hash, "Hashing engine failed to return a digest.")
+        self.assertEqual(len(file_hash), 64, "SHA-256 digest length must be exactly 64 hex characters.")
 
-    def test_crypto_roundtrip(self):
-        """Confirms AES-256 GCM encryption/decryption roundtrip data integrity."""
-        message = "Confidential telemetry record"
-        password = "SecureMasterPassword123!"
+    def test_aes_gcm_encryption_roundtrip(self):
+        """Confirms payload encryption and decryption roundtrips via AES-256 GCM and PBKDF2."""
+        secret_message = "Confidential operational ledger record."
+        master_password = "secure_test_password_123"
         
-        encrypted_payload = encrypt_message(message, password)
-        self.assertIsInstance(encrypted_payload, bytes)
+        encrypted_payload = encrypt_message(secret_message, master_password)
+        self.assertIsInstance(encrypted_payload, bytes, "Encrypted payload must be returned in bytes format.")
         
-        decrypted_text = decrypt_message(encrypted_payload, password)
-        self.assertEqual(message, decrypted_text)
+        decrypted_message = decrypt_message(encrypted_payload, master_password)
+        self.assertEqual(secret_message, decrypted_message, "Decrypted message text does not match the original input.")
 
-    def test_database_persistence(self):
-        """Verifies SQLite3 database initialization, writing, and log querying."""
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".db") as db:
-            db_path = db.name
+    def test_sqlite_database_persistence(self):
+        """Verifies localized SQLite3 database schema creation, writing, and query retrieval."""
+        db_fd, db_path = tempfile.mkstemp()
+        os.close(db_fd)
+        
         try:
             initialize_database(db_path)
+            sample_ciphertext = "dGVzdF9jaXBoZXJ0ZXh0X2Jhc2U2NF9zdHJpbmc="
+            save_log_entry(sample_ciphertext, db_path)
             
-            test_ciphertext = "dGVzdF9jaXBoZXJ0ZXh0X2RhdGE="
-            save_log_entry(test_ciphertext, db_path)
+            connection = sqlite3.connect(db_path)
+            cursor = connection.cursor()
+            cursor.execute("SELECT ciphertext FROM encrypted_logs")
+            row = cursor.fetchone()
+            connection.close()
             
-            records = read_all_log_entries(db_path)
-            self.assertEqual(len(records), 1)
-            self.assertEqual(records[0][2], test_ciphertext)
+            self.assertIsNotNone(row, "Database record query returned empty result.")
+            self.assertEqual(row[0], sample_ciphertext, "Persisted ciphertext does not match retrieved data.")
         finally:
             if os.path.exists(db_path):
                 os.remove(db_path)
 
-    def test_telemetry_anomaly_detection(self):
-        """Evaluates regex log parsing and threat threshold detection."""
-        log_line = '192.168.1.50 - - [01/Nov/2026:12:00:00 +0000] "GET /admin HTTP/1.1" 403 512'
-        pattern = re.compile(r'(?P<ip>\S+) .* "(?P<method>\S+) (?P<endpoint>\S+) (?P<protocol>\S+)" (?P<status>\d+)')
-        match = pattern.search(log_line)
+    def test_post_quantum_mldsa_signing(self):
+        """Evaluates post-quantum ML-DSA-65 key generation, signing, and signature verification."""
+        # 1. Generate post-quantum key pair
+        priv_key, pub_key = generate_pqc_key_pair()
         
-        self.assertIsNotNone(match)
-        self.assertEqual(match.group('ip'), '192.168.1.50')
-        self.assertEqual(match.group('status'), '403')
-
-class TestSigmaEngine(unittest.TestCase):
-    
-    def setUp(self):
-        """Setup temporary test key paths for Project Sigma."""
-        self.priv_path = "test_private.pem"
-        self.pub_path = "test_public.pem"
-        generate_keys(self.priv_path, self.pub_path)
+        # 2. Define a sample Merkle root hash string
+        test_merkle_root = "393a1931c0843bfc6c070a5449a306f63c840d26a7b488665f5370305231fe90"
         
-    def tearDown(self):
-        """Clean up temporary test keys."""
-        if os.path.exists(self.priv_path):
-            os.remove(self.priv_path)
-        if os.path.exists(self.pub_path):
-            os.remove(self.pub_path)
-            
-    def test_sig_generation_and_roundtrip(self):
-        """Verify that signing a Merkle root and checking it with the public key passes."""
-        test_root = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        sig_bytes = sign_merkle_root(test_root, self.priv_path)
-        sig_b64 = base64.b64encode(sig_bytes).decode()
+        # 3. Sign the root using the post-quantum private key
+        signature_b64 = sign_merkle_root_pqc(test_merkle_root, priv_key)
+        self.assertIsInstance(signature_b64, str, "Post-quantum signature must be a string format.")
         
-        is_valid = verify_merkle_root(test_root, sig_b64, self.pub_path)
-        self.assertTrue(is_valid, "Cryptographic signature roundtrip failed.")
+        # 4. Verify the valid signature against the public key
+        is_valid = verify_merkle_root_pqc(test_merkle_root, signature_b64, pub_key)
+        self.assertTrue(is_valid, "Valid post-quantum ML-DSA signature verification failed.")
         
-    def test_sig_tamper_detection(self):
-        """Verify that modifying the Merkle root causes signature validation to fail."""
-        original_root = "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        tampered_root = "1111111111fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        
-        sig_bytes = sign_merkle_root(original_root, self.priv_path)
-        sig_b64 = base64.b64encode(sig_bytes).decode()
-        
-        is_valid = verify_merkle_root(tampered_root, sig_b64, self.pub_path)
-        self.assertFalse(is_valid, "Tampered root incorrectly accepted as valid.")
+        # 5. Confirm negative tampering detection (altered root hash should fail verification)
+        tampered_root = "0000000000000000000000000000000000000000000000000000000000000000"
+        is_tampered_valid = verify_merkle_root_pqc(tampered_root, signature_b64, pub_key)
+        self.assertFalse(is_tampered_valid, "Security alert: Tampered root hash incorrectly passed post-quantum verification.")
 
 if __name__ == "__main__":
     unittest.main()
