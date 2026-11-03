@@ -1,62 +1,120 @@
 # data_integrity_engine/scraper_engine.py
-
 import os
 import sys
+import re
 import json
 import urllib.request
 import urllib.error
+import hashlib
+import sqlite3
 import datetime
+import asyncio
 
-def fetch_and_aggregate_data(target_url: str, output_file: str = "archive_data.json"):
+class ProgrammaticScraperEngine:
     """
-    Programmatically fetches raw data from a targeted endpoint, 
-    parses and sanitizes the payload, and structures it into a JSON archive.
+    Implements a zero-dependency, asynchronous web ingestion pipeline.
+    Parses programmatic data streams using native standard libraries,
+    enforces absolute UTC audit tracking headers, and records snapshots securely.
     """
-    print(f"[NETWORK] Initiating secure data request to: {target_url}")
-    
-    headers = {'User-Agent': 'DataIntegrityEngine-Agent/1.0'}
-    
-    try:
-        req = urllib.request.Request(target_url, headers=headers)
-        with urllib.request.urlopen(req, timeout=10) as response:
-            raw_content = response.read().decode('utf-8')
-            
-        # Parse raw payload into a structured python object
-        parsed_data = json.loads(raw_content)
+
+    def __init__(self, db_path="secure_vault.db"):
+        self.db_path = db_path
+        # User-Agent representing compliance and identification profiles
+        self.user_agent = "DataIntegrityEngine-Crawler/2.0 (+https://github.com)"
         
-        # Build structured archive package with system metadata
-        archive_payload = {
-            "ingestion_metadata": {
-                "source_url": target_url,
-                "ingested_at_utc": datetime.datetime.utcnow().isoformat(),
-                "status": "SUCCESS"
-            },
-            "record_count": len(parsed_data) if isinstance(parsed_data, list) else 1,
-            "payload": parsed_data
+    def _calculate_sha256(self, data: bytes) -> str:
+        """Computes a strict cryptographic hash over raw ingested content."""
+        return hashlib.sha256(data).hexdigest()
+
+    def _log_to_vault(self, url: str, status: int, content: str, checksum: str):
+        """Persists crawled metrics cleanly inside the secure relational vault database."""
+        timestamp = datetime.datetime.now(datetime.UTC).isoformat()
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute("""
+                INSERT INTO project_beta_feeds (timestamp, source_url, http_status_code, payload_content, sha256_checksum)
+                VALUES (?, ?, ?, ?, ?)
+            """, (timestamp, url, status, content, checksum))
+            conn.commit()
+            conn.close()
+            print(f"[VAULT LOG] Successfully anchored ingestion footprint for: {url}")
+        except Exception as e:
+            print(f"[VAULT ERROR] Failed to record footprint inside database: {str(e)}")
+
+    async def fetch_target_stream(self, url: str) -> dict:
+        """
+        Executes a non-blocking network request using native urllib bindings wrapped in an asyncio thread pool.
+        """
+        print(f"\n[HTTP REQUEST] Dispaching egress worker to target: {url}")
+        
+        req = urllib.request.Request(url)
+        req.add_header("User-Agent", self.user_agent)
+        req.add_header("Accept-Encoding", "identity")
+        req.add_header("X-Audit-Tracking-UTC", datetime.datetime.now(datetime.UTC).isoformat())
+
+        # Execute blocking urllib call within a default executor pool to prevent blocking the async loop
+        loop = asyncio.get_running_loop()
+        
+        def _execute_network_call():
+            try:
+                with urllib.request.urlopen(req, timeout=10) as response:
+                    status = response.getcode()
+                    raw_payload = response.read()
+                    return status, raw_payload
+            except urllib.error.HTTPError as e:
+                return e.code, str(e.reason).encode('utf-8')
+            except urllib.error.URLError as e:
+                return 599, str(e.reason).encode('utf-8')
+            except Exception as e:
+                return 500, str(e).encode('utf-8')
+
+        status_code, raw_bytes = await loop.run_in_executor(None, _execute_network_call)
+        
+        # Process and validate the response payload
+        checksum = self._calculate_sha256(raw_bytes)
+        decoded_content = raw_bytes.decode('utf-8', errors='ignore')
+        
+        print(f"[HTTP RESPONSE] Code: {status_code} | Payload Checksum: {checksum}")
+        
+        # Commit footprint immediately to database tracking tables
+        self._log_to_vault(url, status_code, decoded_content, checksum)
+        
+        return {
+            "url": url,
+            "status": status_code,
+            "sha256": checksum,
+            "content_snippet": decoded_content[:150].strip().replace('\n', ' ')
         }
-        
-        # Write structured profile to local archive
-        with open(output_file, 'w', encoding='utf-8') as f:
-            json.dump(archive_payload, f, indent=4)
-            
-        print(f"[ARCHIVE] Successfully aggregated and structured data into: {output_file}")
-        return True
 
-    except urllib.error.URLError as e:
-        print(f"[ERROR] Network connection failed: {e.reason}")
-        return False
-    except json.JSONDecodeError:
-        print("[ERROR] Failed to parse response into JSON. Invalid payload format.")
-        return False
-    except Exception as e:
-        print(f"[ERROR] Unexpected execution failure: {str(e)}")
-        return False
+    async def execute_batch_harvest(self, target_urls: list):
+        """Coordinates concurrent network ingestion matrix execution across worker clusters."""
+        print(f"=============================================================")
+        print("          PROJECT BETA: DATA INGESTION ENGINE ACTIVE         ")
+        print("=============================================================")
+        
+        tasks = [self.fetch_target_stream(url) for url in target_urls]
+        results = await asyncio.gather(*tasks)
+        
+        print("\n=============================================================")
+        print("                BATCH HARVEST SUMMARY PROFILE                 ")
+        print("=============================================================")
+        for res in results:
+            print(f"URL   : {res['url']}")
+            print(f"Status: {res['status']} | Hash: {res['sha256']}")
+            print(f"Data  : {res['content_snippet']}...")
+            print("-" * 70)
 
 if __name__ == "__main__":
-    # Target a reliable public JSON endpoint for initial architecture verification
-    target_endpoint = "https://jsonplaceholder.typicode.com/todos?_limit=5"
-    destination_archive = "archive_data.json"
+    # Test suite targets (Using public configuration end points)
+    sample_targets = [
+        "https://httpbin.org",
+        "https://httpbin.org"
+    ]
     
-    success = fetch_and_aggregate_data(target_endpoint, destination_archive)
-    if not success:
-        sys.exit(1)
+    scraper = ProgrammaticScraperEngine()
+    try:
+        asyncio.run(scraper.execute_batch_harvest(sample_targets))
+    except KeyboardInterrupt:
+        print("\n[SCRAPER] Ingestion sequence terminated via user control interrupt.")
+        sys.exit(0)
