@@ -1,6 +1,6 @@
 {
     "system_metadata": {
-        "generated_at_utc": "2026-11-03T02:58:52.488786",
+        "generated_at_utc": "2026-11-05T03:49:30.027626",
         "target_path": "/data/data/com.termux/files/home/data_integrity_engine"
     },
     "records": {
@@ -8,21 +8,9 @@
             "sha256": "3c840d26a7b488665f5370305231fe908ca55f331978873a705b9bedec8559a8",
             "size_bytes": 1070
         },
-        "core.py": {
-            "sha256": "4c7162cfcf4c07e6713d93e60d985f1b88c0ac865f5dd1a0b563ea88e397919b",
-            "size_bytes": 5051
-        },
         "audit.sh": {
-            "sha256": "6df6b560640c4e7e124499c2884a7a4d6a8dd9e4c5b917f5517c82c9277e7988",
-            "size_bytes": 744
-        },
-        "crypto_log.py": {
-            "sha256": "dd5ce714a1a60637d47e6d24f0ca2cd7978d2831d98a627938b4093a19908c8b",
-            "size_bytes": 5091
-        },
-        "scraper_engine.py": {
-            "sha256": "dcb4a95e2b3001fa063ea71e8d42f27168fc7dbf05b6a3aaeaa8f7831d285a23",
-            "size_bytes": 2308
+            "sha256": "344827020f7333cf60040702ae7679ea26460d5c0ca6fc0aa52b55dada821610",
+            "size_bytes": 759
         },
         "archive_data.json": {
             "sha256": "b06197c1a6ba5ab16ed63d7c5fadf3fa471a4961f0fd03d9cd83208a26ec8224",
@@ -35,10 +23,6 @@
         "network_traffic.log": {
             "sha256": "393c690fb736411f718de03ee23201461e740491828e918a8d4def7a4f03c7c4",
             "size_bytes": 475
-        },
-        "test_engine.py": {
-            "sha256": "851f420fa7c3c8f56aeb373f1a977557ff0d6e2f443882d587ed2cdeee83811b",
-            "size_bytes": 4513
         },
         "daemon.py": {
             "sha256": "03e7e44940f160924caa69563daf96932ce5b5413be77560b8c10aef3b6f1931",
@@ -80,21 +64,17 @@
             "sha256": "62bae8e4b91c906527e029a421094b30c843e27213c832e07f4c6e6254269786",
             "size_bytes": 2882
         },
-        "pqc_migration.py": {
-            "sha256": "b566b4d7ecd07390c64d71caa7546f60a57af9a502b1de6d4bcc1cc5e891f36d",
-            "size_bytes": 8685
-        },
         "sigma_classical_private.pem": {
-            "sha256": "5de4a41425fc86a6ab4f0012984109e8468e858c75756a8c4b0f720236aa798a",
+            "sha256": "06e41733f8c9c66a3583ea66504eb771a90e477838c2343489df8c318beff0a4",
             "size_bytes": 48
         },
         ".gitignore": {
             "sha256": "5e50384cbaff72cee9fcde3539249f10d62e8435bb24047c0a9de89b5c6db56d",
             "size_bytes": 48
         },
-        "async_monitor.py": {
-            "sha256": "d6df07e27ba78cfedd6b3512dbac10f099490b18a5bfb12360c71239e30a9309",
-            "size_bytes": 6516
+        "portfolio_report.md": {
+            "sha256": "6a1910f65198d2488925cc40ef42265ba260ff419953bf9fd6d532be2680e451",
+            "size_bytes": 7445
         },
         "__pycache__/test_engine.cpython-313.pyc": {
             "sha256": "fe3f3ce460b26ca60e17eed2290a13be8a86136db39e789d94cbda3a4598d06a",
@@ -125,8 +105,68 @@
             "size_bytes": 3014
         },
         "__pycache__/pqc_migration.cpython-313.pyc": {
-            "sha256": "49ce55c4e2bd80d5db5b5b18a3a7e31e5f5fad56f375324cdcdd6941c2e8d79a",
-            "size_bytes": 9556
+            "sha256": "5f8f5653f294ebb71f012c7fa3e3297f08424d29626f3acb551b148be050dee8",
+            "size_bytes": 9926
+        },
+        "data_integrity/core.py": {
+            "sha256": "4c7162cfcf4c07e6713d93e60d985f1b88c0ac865f5dd1a0b563ea88e397919b",
+            "size_bytes": 5051
+        },
+        "data_integrity/crypto_log.py": {
+            "sha256": "dd5ce714a1a60637d47e6d24f0ca2cd7978d2831d98a627938b4093a19908c8b",
+            "size_bytes": 5091
+        },
+        "data_integrity/scraper_engine.py": {
+            "sha256": "181678f35d9f8a6a6f9295d7b6615a379d9312359b2f8a7ce9e91d1eb4a2fdb5",
+            "size_bytes": 5162
+        },
+        "data_integrity/pqc_migration.py": {
+            "sha256": "40fba773810451ba2f7bd38fdce5f56bfc6c5e8b60a7b9fcff7e9f3784b9c56a",
+            "size_bytes": 10210
+        },
+        "data_integrity/async_monitor.py": {
+            "sha256": "36215c7c66c0c5580906995e7f37494bff329f50657a90c8a0fc97e55631c1c9",
+            "size_bytes": 9357
+        },
+        "data_integrity/__init__.py": {
+            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "size_bytes": 0
+        },
+        "data_integrity/.gitignore": {
+            "sha256": "b55cdb7289bf7b49c6c1b97b47c5d4c5bd02fcbc675dbcee10b2719facfe98ff",
+            "size_bytes": 25
+        },
+        "data_integrity/__pycache__/__init__.cpython-313.pyc": {
+            "sha256": "8ef41dc158469fc709ccb2321c0e87efcbfed636d1a0ecf9c7f8c69ba79aaca7",
+            "size_bytes": 178
+        },
+        "data_integrity/__pycache__/async_monitor.cpython-313.pyc": {
+            "sha256": "7e58c330d3153e9fd8e6321e3d7d250a1ed882b3915ba223954eb1b4afdc37c4",
+            "size_bytes": 12592
+        },
+        "data_integrity/__pycache__/core.cpython-313.pyc": {
+            "sha256": "62e90249c32ef5be66f6eebb79faa1fcf9360290c7066e6da4769b176a70df05",
+            "size_bytes": 5489
+        },
+        "data_integrity/__pycache__/crypto_log.cpython-313.pyc": {
+            "sha256": "bf66559f37141699241ce4f42d3e5a9228ea2bec156cce242afa72fedb484356",
+            "size_bytes": 6977
+        },
+        "data_integrity/__pycache__/scraper_engine.cpython-313.pyc": {
+            "sha256": "6620247dc8748c86172f2978d80fa6d4bbe5fd9ff78d9df1933ac923d84da0d7",
+            "size_bytes": 7787
+        },
+        "data_integrity/__pycache__/pqc_migration.cpython-313.pyc": {
+            "sha256": "d4597352230f8728c9b98add2e3bd8d3a2d30e588d4c0c0ee37c9264f4820542",
+            "size_bytes": 9941
+        },
+        "tests/test_engine.py": {
+            "sha256": "e1c7322afa97f47a3dd8c0679c230aaf3c534a8e903d157cca167d193cf77b9e",
+            "size_bytes": 3496
+        },
+        "tests/__pycache__/test_engine.cpython-313.pyc": {
+            "sha256": "09aa10dd5b6f017bd61f9f10cc3adadcf6b5294b668514a8a59a3a6d2d83b089",
+            "size_bytes": 5247
         }
     }
 }
