@@ -7,10 +7,7 @@ import datetime
 import hashlib
 import sqlite3
 from data_integrity.core import generate_system_manifest
-from data_integrity.pqc_migration import HybridSignatureSuite, QuantumVulnerabilityScanner
-
-# Ensure the parent directory (project root) is in Python's module search path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from data_integrity.pqc_migration import HybridSignatureSuite, QuantumVulnerabilityScanner, RFC3161TimestampAuthorityClient
 
 # Dynamically resolve path to the project root directory and database vault
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -19,7 +16,7 @@ DB_PATH = os.path.join(BASE_DIR, "../secure_vault.db")
 class SigchainLedgerManager:
     """
     Manages chronological attestation chaining, binding each signature
-    to its cryptographic predecessor to form an append-only sigchain.
+    to its cryptographic predecessor and embedding RFC 3161 timestamp tokens.
     """
     def __init__(self, db_path=DB_PATH):
         self.db_path = db_path
@@ -34,7 +31,8 @@ class SigchainLedgerManager:
                 timestamp TEXT NOT NULL,
                 merkle_root TEXT NOT NULL,
                 signature TEXT NOT NULL,
-                previous_signature TEXT
+                previous_signature TEXT,
+                rfc3161_token TEXT
             );
         """)
         conn.commit()
@@ -49,21 +47,21 @@ class SigchainLedgerManager:
         conn.close()
         return row[0] if row else "GENESIS_ROOT_ANCHOR"
 
-    def append_attestation(self, timestamp: str, merkle_root: str, signature_payload: str) -> int:
-        """Appends a new hash-linked attestation to the secure sigchain ledger."""
+    def append_attestation(self, timestamp: str, merkle_root: str, signature_payload: str, rfc3161_token: str) -> int:
+        """Appends a new hash-linked attestation and its external timestamp token to the sigchain."""
         prev_sig = self.get_latest_signature()
         
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         cursor.execute("""
-            INSERT INTO sigma_attestations (timestamp, merkle_root, signature, previous_signature)
-            VALUES (?, ?, ?, ?)
-        """, (timestamp, merkle_root, signature_payload, prev_sig))
+            INSERT INTO sigma_attestations (timestamp, merkle_root, signature, previous_signature, rfc3161_token)
+            VALUES (?, ?, ?, ?, ?)
+        """, (timestamp, merkle_root, signature_payload, prev_sig, rfc3161_token))
         
         seq_id = cursor.lastrowid
         conn.commit()
         conn.close()
-        print(f"[SIGCHAIN] Appended block #{seq_id} linked to predecessor.")
+        print(f"[SIGCHAIN] Appended block #{seq_id} anchored with RFC 3161 Token.")
         return seq_id
 
 
@@ -73,7 +71,6 @@ class AutonomicIntegrityDaemon:
     and cryptographic verification daemon backed by Sigchain attestation logging.
     """
     def __init__(self, workspace_path=None, ledger_file="manifest.json", interval_seconds=5):
-        # Automatically point workspace to the project root when running from inside data_integrity/
         self.workspace = workspace_path if workspace_path else os.path.abspath(os.path.join(BASE_DIR, ".."))
         self.ledger = os.path.join(self.workspace, ledger_file)
         self.signature_file = f"{self.ledger}.sig.json"
@@ -98,10 +95,6 @@ class AutonomicIntegrityDaemon:
         timestamp = datetime.datetime.now(datetime.timezone.utc).isoformat()
         print(f"\n[ACTUATOR] !!! CRITICAL STATE DRIFT DETECTED AT {timestamp} UTC !!!")
         print(f"[ACTUATOR] Target Asset: {target_file} | Violation: {issue_type}")
-        
-        protected_files = [self.ledger, self.signature_file, "async_monitor.py"]
-        if target_file == self.ledger and issue_type == "LEDGER_TAMPERED":
-            print(f"[ACTUATOR] Ledger corruption detected. Initiating ground-truth recovery...")
 
         try:
             if issue_type in ["MODIFIED", "DELETED", "LEDGER_TAMPERED"]:
@@ -125,7 +118,7 @@ class AutonomicIntegrityDaemon:
             print(f"[CRITICAL ERROR] Actuator exception: {str(e)}")
 
     def generate_and_sign_ledger(self):
-        """Generates a fresh manifest baseline, signs it via PQC, and anchors it in the SQLite sigchain."""
+        """Generates manifest baseline, signs via hybrid PQC, fetches external RFC 3161 token, and anchors in SQLite."""
         print(f"[MONITOR] Generating fresh baseline manifest ledger...")
         current_manifest = generate_system_manifest(self.workspace)
         with open(self.ledger, "w") as f:
@@ -137,13 +130,16 @@ class AutonomicIntegrityDaemon:
         with open(self.signature_file, "w") as f:
             f.write(signature_payload)
             
+        # Fetch external RFC 3161 timestamp token for Phase 3 global anchoring
+        rfc3161_token = RFC3161TimestampAuthorityClient.request_trusted_timestamp(ledger_hash)
+
         # Anchor into SQLite Sigchain Ledger
         try:
             sig_data = json.loads(signature_payload)
             timestamp = sig_data.get("attestation_metadata", {}).get("signed_at_utc", datetime.datetime.now(datetime.timezone.utc).isoformat())
-            self.sigchain_manager.append_attestation(timestamp, ledger_hash, signature_payload)
+            self.sigchain_manager.append_attestation(timestamp, ledger_hash, signature_payload, rfc3161_token)
         except Exception as e:
-            print(f"[VAULT WARNING] Failed to record attestation into sigchain DB: {str(e)}")
+            print(f"[VAULT WARNING] Failed to record timestamped attestation into sigchain DB: {str(e)}")
 
         print(f"[MONITOR] Cryptographic baseline anchored successfully in {self.signature_file}.")
 
@@ -214,7 +210,7 @@ class AutonomicIntegrityDaemon:
         self.is_running = True
         print(f"[MONITOR] Initializing Zero-Trust Autonomous Control Loop...")
         print(f"[MONITOR] Workspace Target: {self.workspace}")
-        print(f"[MONITOR] Sampling Interval: {self.interval}s (Hardened Hybrid PQC + Sigchain)")
+        print(f"[MONITOR] Sampling Interval: {self.interval}s (Phase 3 RFC 3161 TSA Anchored)")
         print("-" * 70)
         while self.is_running:
             await self.run_comparator_cycle()
