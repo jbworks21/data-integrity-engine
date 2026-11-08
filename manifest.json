@@ -1,12 +1,16 @@
 {
     "system_metadata": {
-        "generated_at_utc": "2026-11-05T03:49:30.027626",
+        "generated_at_utc": "2026-11-05T04:47:26.572423",
         "target_path": "/data/data/com.termux/files/home/data_integrity_engine"
     },
     "records": {
         "LICENSE": {
             "sha256": "3c840d26a7b488665f5370305231fe908ca55f331978873a705b9bedec8559a8",
             "size_bytes": 1070
+        },
+        "init_db.py": {
+            "sha256": "2d2c7207d5a9ea8e28f94af0d65ddc391a48c5a17b10bab3588b87de4a498763",
+            "size_bytes": 1175
         },
         "audit.sh": {
             "sha256": "344827020f7333cf60040702ae7679ea26460d5c0ca6fc0aa52b55dada821610",
@@ -121,16 +125,12 @@
             "size_bytes": 5162
         },
         "data_integrity/pqc_migration.py": {
-            "sha256": "40fba773810451ba2f7bd38fdce5f56bfc6c5e8b60a7b9fcff7e9f3784b9c56a",
-            "size_bytes": 10210
+            "sha256": "890a84bb3f83e7d8a93039f7f983cbeb0943063304bd3cb7da3475a055c6713d",
+            "size_bytes": 4229
         },
         "data_integrity/async_monitor.py": {
-            "sha256": "36215c7c66c0c5580906995e7f37494bff329f50657a90c8a0fc97e55631c1c9",
-            "size_bytes": 9357
-        },
-        "data_integrity/__init__.py": {
-            "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-            "size_bytes": 0
+            "sha256": "267787d13ac6d6bc821db487cf1a1e981e4603ad41210b9b3d338a7708221107",
+            "size_bytes": 10568
         },
         "data_integrity/.gitignore": {
             "sha256": "b55cdb7289bf7b49c6c1b97b47c5d4c5bd02fcbc675dbcee10b2719facfe98ff",
@@ -141,8 +141,8 @@
             "size_bytes": 178
         },
         "data_integrity/__pycache__/async_monitor.cpython-313.pyc": {
-            "sha256": "7e58c330d3153e9fd8e6321e3d7d250a1ed882b3915ba223954eb1b4afdc37c4",
-            "size_bytes": 12592
+            "sha256": "c38b0c6e61e4cb6b51f6697fa3df1fdbeb5781e88a8d1762ec693db79555c758",
+            "size_bytes": 16366
         },
         "data_integrity/__pycache__/core.cpython-313.pyc": {
             "sha256": "62e90249c32ef5be66f6eebb79faa1fcf9360290c7066e6da4769b176a70df05",
@@ -157,8 +157,8 @@
             "size_bytes": 7787
         },
         "data_integrity/__pycache__/pqc_migration.cpython-313.pyc": {
-            "sha256": "d4597352230f8728c9b98add2e3bd8d3a2d30e588d4c0c0ee37c9264f4820542",
-            "size_bytes": 9941
+            "sha256": "f4c4c08e66857ded31ea431cdec90b3bf952c14e3fc0bc3625f570dd738efe28",
+            "size_bytes": 6015
         },
         "tests/test_engine.py": {
             "sha256": "e1c7322afa97f47a3dd8c0679c230aaf3c534a8e903d157cca167d193cf77b9e",
