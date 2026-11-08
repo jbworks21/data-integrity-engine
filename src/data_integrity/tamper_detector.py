@@ -4,8 +4,8 @@ import json
 import sys
 import base64
 from pathlib import Path
-from merkle import MerkleTree, hash_file
-from crypto_log import save_alert_entry, initialize_database
+from .merkle import MerkleTree, hash_file
+from .crypto_log import save_alert_entry, initialize_database
 
 BASELINE_FILE = "directory_baseline.json"
 DB_PATH = "secure_vault.db"

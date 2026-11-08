@@ -1,3 +1,0 @@
-git fetch origin
-git log --oneline HEAD..origin/main    # look before you leap
-git pull --rebase origin main          # or --no-rebase, pick one and stick with it

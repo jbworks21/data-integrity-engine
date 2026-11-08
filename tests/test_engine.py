@@ -5,19 +5,19 @@ import tempfile
 import sqlite3
 import base64
 
-from core import calculate_file_hash, generate_system_manifest
-from crypto_log import (
+from data_integrity.core import calculate_file_hash, generate_system_manifest
+from data_integrity.crypto_log import (
     encrypt_message, decrypt_message, initialize_database,
     save_log_entry, save_alert_entry, read_all_log_entries,
 )
-from merkle import MerkleTree, hash_file, hash_leaf, hash_pair
-from sig_engine import (
+from data_integrity.merkle import MerkleTree, hash_file, hash_leaf, hash_pair
+from data_integrity.sig_engine import (
     generate_keys, sign_merkle_root, verify_merkle_root,
 )
-from pqc_migration import HybridSignatureSuite
+from data_integrity.pqc_migration import HybridSignatureSuite
 
 try:
-    from sig_engine_pqc import (
+    from data_integrity.sig_engine_pqc import (
         generate_pqc_key_pair, sign_merkle_root_pqc,
         verify_merkle_root_pqc, _MLDSA_AVAILABLE,
     )
@@ -43,7 +43,7 @@ class TestDataIntegrityEngine(unittest.TestCase):
 
     def test_manifest_excludes_database(self):
         db_path = os.path.join(self.test_dir.name, "foo.db")
-        open(db_path, "w").write("x")
+        with open(db_path, "w", encoding="utf-8") as f:f.write("x")
         m = generate_system_manifest(self.test_dir.name, quiet=True)
         self.assertNotIn("foo.db", m["records"])
 

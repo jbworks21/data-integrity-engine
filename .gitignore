@@ -1,5 +1,18 @@
+# Bytecode & Caches
 __pycache__/
+*.pyc
+*.pyo
+
+# Runtime Data, Logs & Databases (Data folder state)
+data/*.db
+data/*.log
+data/*.json
+*.log
 *.db
-*.pem
-directory_baseline.json
-*.pem
+
+# Environment & Build Artifacts
+.env
+build/
+dist/
+*.egg-info/
+

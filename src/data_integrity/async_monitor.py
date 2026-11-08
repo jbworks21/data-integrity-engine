@@ -6,8 +6,8 @@ import asyncio
 import datetime
 import hashlib
 import subprocess
-from core import generate_system_manifest
-from pqc_migration import HybridSignatureSuite, QuantumVulnerabilityScanner
+from .core import generate_system_manifest
+from .pqc_migration import HybridSignatureSuite, QuantumVulnerabilityScanner
 
 
 class AutonomousSelfHealer:
@@ -95,7 +95,7 @@ class AutonomousSelfHealer:
         if have_priv and have_pub:
             return True
         if not have_priv and not have_pub:
-            import sig_engine
+            from . import sig_engine
             os.makedirs(os.path.dirname(self.private_key_path), exist_ok=True)
             os.makedirs(os.path.dirname(self.public_key_path), exist_ok=True)
             sig_engine.generate_keys(self.private_key_path, self.public_key_path)

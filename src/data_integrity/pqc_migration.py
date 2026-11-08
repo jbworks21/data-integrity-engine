@@ -7,10 +7,10 @@ import json
 import datetime
 import hashlib
 
-import sig_engine
+from . import sig_engine
 
 try:
-    from sig_engine_pqc import (
+    from .sig_engine_pqc import (
         generate_pqc_key_pair, sign_merkle_root_pqc, verify_merkle_root_pqc,
     )
     _PQC_AVAILABLE = True

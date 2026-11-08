@@ -9,7 +9,7 @@ echo "[CRITICAL] RUNNING AUTOMATED INTEGRITY SCAN"
 echo "============================================="
 
 # 1. Execute the core verification python engine
-python data_integrity/core.py
+python core.py
 
 # 2. Capture the exact system exit code
 # (0 means success/no modifications; anything else means warning/error)

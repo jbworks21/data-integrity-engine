@@ -3,7 +3,7 @@ import time
 import os
 import re
 from collections import defaultdict, deque
-from crypto_log import save_alert_entry, initialize_database
+from .crypto_log import save_alert_entry, initialize_database
 
 THRESHOLD_ATTEMPTS = 3
 TIME_WINDOW_SECONDS = 30
