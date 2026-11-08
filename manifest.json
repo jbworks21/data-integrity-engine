@@ -1,6 +1,6 @@
 {
     "system_metadata": {
-        "generated_at_utc": "2026-11-05T04:47:26.572423",
+        "generated_at_utc": "2026-11-08T09:39:38.396621+00:00",
         "target_path": "/data/data/com.termux/files/home/data_integrity_engine"
     },
     "records": {
@@ -8,13 +8,29 @@
             "sha256": "3c840d26a7b488665f5370305231fe908ca55f331978873a705b9bedec8559a8",
             "size_bytes": 1070
         },
+        "audit.sh": {
+            "sha256": "344827020f7333cf60040702ae7679ea26460d5c0ca6fc0aa52b55dada821610",
+            "size_bytes": 759
+        },
         "init_db.py": {
             "sha256": "2d2c7207d5a9ea8e28f94af0d65ddc391a48c5a17b10bab3588b87de4a498763",
             "size_bytes": 1175
         },
-        "audit.sh": {
-            "sha256": "344827020f7333cf60040702ae7679ea26460d5c0ca6fc0aa52b55dada821610",
-            "size_bytes": 759
+        "gitfixes.txt": {
+            "sha256": "3393e67efe56d094f7172f51471eac1624a753f19a18c33197ac854ea4b5c6be",
+            "size_bytes": 163
+        },
+        "core.py": {
+            "sha256": "c2a866589844bcf111f8ca1fb3bd8eb0315233f8df9a57f9dffef25d5c28a90a",
+            "size_bytes": 4224
+        },
+        "crypto_log.py": {
+            "sha256": "49a65042e3e360eb05556fddda3617016d4dd7cada4ab7dd31c8b3cb62e111c8",
+            "size_bytes": 5174
+        },
+        "pqc_migration.py": {
+            "sha256": "c583fb9b931e028f7a604266a736a197613b3f5befdc61fd1227f7626e7e7cf6",
+            "size_bytes": 5224
         },
         "archive_data.json": {
             "sha256": "b06197c1a6ba5ab16ed63d7c5fadf3fa471a4961f0fd03d9cd83208a26ec8224",
@@ -28,21 +44,21 @@
             "sha256": "393c690fb736411f718de03ee23201461e740491828e918a8d4def7a4f03c7c4",
             "size_bytes": 475
         },
+        "async_monitor.py": {
+            "sha256": "c78bb663e1bc9f421b88df02cdad9be46a55d0880aebe70bd75fda8715d45e33",
+            "size_bytes": 8186
+        },
         "daemon.py": {
-            "sha256": "03e7e44940f160924caa69563daf96932ce5b5413be77560b8c10aef3b6f1931",
-            "size_bytes": 3045
+            "sha256": "e8952be380448ecc2a682a3ba44e5b02914e127d85f1a156cb59abb050ebf33f",
+            "size_bytes": 2278
         },
         "merkle.py": {
-            "sha256": "60f480d6e72149371131937be4d26be5a5fd51a9d9f7f5601533398066ac9974",
-            "size_bytes": 3225
+            "sha256": "d82a30ab8f52ff6e9e77ff9ee60c4c8a7b987a0bad3dcfe9b48b863666613fa2",
+            "size_bytes": 2885
         },
         "tamper_detector.py": {
-            "sha256": "f319c5fd77b061d5ea6a06aeb493c6b2153749e016383b346c2038219715217b",
-            "size_bytes": 4076
-        },
-        "directory_baseline.json": {
-            "sha256": "31c22b5694986b5b63c9f1a5cf3da8fa483c173f00fcb22c901d9851806f1b40",
-            "size_bytes": 1519
+            "sha256": "5a55ed9f058099ccd39eec982d039766043bce95352476b97c4b0764fc08ea45",
+            "size_bytes": 3436
         },
         "sig_engine.py": {
             "sha256": "29a4ddbd1f8436146fe61497fe04a7dc5e0e6a9bd662ee4f2b151dcf87febb4b",
@@ -65,8 +81,12 @@
             "size_bytes": 113
         },
         "sig_engine_pqc.py": {
-            "sha256": "62bae8e4b91c906527e029a421094b30c843e27213c832e07f4c6e6254269786",
-            "size_bytes": 2882
+            "sha256": "7e818f646dbc1ffde5760ce5ce3de043216246782c8ccad6123024b3b30fc9f9",
+            "size_bytes": 1301
+        },
+        "test_engine.py": {
+            "sha256": "2d26271380cc734d33f9bc8c96301fee8aea6000edfaea39fa00b7e2dd0d7bcb",
+            "size_bytes": 4867
         },
         "sigma_classical_private.pem": {
             "sha256": "06e41733f8c9c66a3583ea66504eb771a90e477838c2343489df8c318beff0a4",
@@ -76,97 +96,21 @@
             "sha256": "5e50384cbaff72cee9fcde3539249f10d62e8435bb24047c0a9de89b5c6db56d",
             "size_bytes": 48
         },
+        "Project Sigma Portfolio Report.md": {
+            "sha256": "f598a235e21e438336c6c05ae055a9112da17ef61926ca6cee77ca380bea5c72",
+            "size_bytes": 5255
+        },
         "portfolio_report.md": {
-            "sha256": "6a1910f65198d2488925cc40ef42265ba260ff419953bf9fd6d532be2680e451",
-            "size_bytes": 7445
+            "sha256": "b1b79e06ce7a32e145b4ae5f2d7445125605d025b91fd4d3d1d6382704bff011",
+            "size_bytes": 12231
         },
-        "__pycache__/test_engine.cpython-313.pyc": {
-            "sha256": "fe3f3ce460b26ca60e17eed2290a13be8a86136db39e789d94cbda3a4598d06a",
-            "size_bytes": 6152
+        "gotit.bash": {
+            "sha256": "fba66d65c2ffc237db8def746516638b473fc03a473d275f9b1ac529318bbf66",
+            "size_bytes": 1076
         },
-        "__pycache__/core.cpython-313.pyc": {
-            "sha256": "e7952299455bdc26da8cfc8f4226decdf9e367c9685b4d99b49219c882f1f7f0",
-            "size_bytes": 5474
-        },
-        "__pycache__/crypto_log.cpython-313.pyc": {
-            "sha256": "ddc7299d0fe3552e4fb323ef779f08021a509d02db8b1436ea98fa4a3e806b0d",
-            "size_bytes": 6962
-        },
-        "__pycache__/network_monitor.cpython-313.pyc": {
-            "sha256": "53c875ace7e92085ad590dbd4e8b021de498cb2e4bab7c6e68cee0e4fef83bd3",
-            "size_bytes": 3470
-        },
-        "__pycache__/merkle.cpython-313.pyc": {
-            "sha256": "d17f984646b8deb99e00ba74f799b8aa6b0fcabee1bd3d51482105bc36f6eb14",
-            "size_bytes": 5166
-        },
-        "__pycache__/sig_engine.cpython-313.pyc": {
-            "sha256": "efeacda68760d73f00fd7d2cc4924885c4d3466e6604409e1407936e586c5e78",
-            "size_bytes": 6221
-        },
-        "__pycache__/sig_engine_pqc.cpython-313.pyc": {
-            "sha256": "7f2a3a7cca4ed5741c1c52ee27b029482cabcf27ab8f667ef46667307c985dcc",
-            "size_bytes": 3014
-        },
-        "__pycache__/pqc_migration.cpython-313.pyc": {
-            "sha256": "5f8f5653f294ebb71f012c7fa3e3297f08424d29626f3acb551b148be050dee8",
-            "size_bytes": 9926
-        },
-        "data_integrity/core.py": {
-            "sha256": "4c7162cfcf4c07e6713d93e60d985f1b88c0ac865f5dd1a0b563ea88e397919b",
-            "size_bytes": 5051
-        },
-        "data_integrity/crypto_log.py": {
-            "sha256": "dd5ce714a1a60637d47e6d24f0ca2cd7978d2831d98a627938b4093a19908c8b",
-            "size_bytes": 5091
-        },
-        "data_integrity/scraper_engine.py": {
-            "sha256": "181678f35d9f8a6a6f9295d7b6615a379d9312359b2f8a7ce9e91d1eb4a2fdb5",
-            "size_bytes": 5162
-        },
-        "data_integrity/pqc_migration.py": {
-            "sha256": "890a84bb3f83e7d8a93039f7f983cbeb0943063304bd3cb7da3475a055c6713d",
-            "size_bytes": 4229
-        },
-        "data_integrity/async_monitor.py": {
-            "sha256": "267787d13ac6d6bc821db487cf1a1e981e4603ad41210b9b3d338a7708221107",
-            "size_bytes": 10568
-        },
-        "data_integrity/.gitignore": {
-            "sha256": "b55cdb7289bf7b49c6c1b97b47c5d4c5bd02fcbc675dbcee10b2719facfe98ff",
-            "size_bytes": 25
-        },
-        "data_integrity/__pycache__/__init__.cpython-313.pyc": {
-            "sha256": "8ef41dc158469fc709ccb2321c0e87efcbfed636d1a0ecf9c7f8c69ba79aaca7",
-            "size_bytes": 178
-        },
-        "data_integrity/__pycache__/async_monitor.cpython-313.pyc": {
-            "sha256": "c38b0c6e61e4cb6b51f6697fa3df1fdbeb5781e88a8d1762ec693db79555c758",
-            "size_bytes": 16366
-        },
-        "data_integrity/__pycache__/core.cpython-313.pyc": {
-            "sha256": "62e90249c32ef5be66f6eebb79faa1fcf9360290c7066e6da4769b176a70df05",
-            "size_bytes": 5489
-        },
-        "data_integrity/__pycache__/crypto_log.cpython-313.pyc": {
-            "sha256": "bf66559f37141699241ce4f42d3e5a9228ea2bec156cce242afa72fedb484356",
-            "size_bytes": 6977
-        },
-        "data_integrity/__pycache__/scraper_engine.cpython-313.pyc": {
-            "sha256": "6620247dc8748c86172f2978d80fa6d4bbe5fd9ff78d9df1933ac923d84da0d7",
-            "size_bytes": 7787
-        },
-        "data_integrity/__pycache__/pqc_migration.cpython-313.pyc": {
-            "sha256": "f4c4c08e66857ded31ea431cdec90b3bf952c14e3fc0bc3625f570dd738efe28",
-            "size_bytes": 6015
-        },
-        "tests/test_engine.py": {
-            "sha256": "e1c7322afa97f47a3dd8c0679c230aaf3c534a8e903d157cca167d193cf77b9e",
-            "size_bytes": 3496
-        },
-        "tests/__pycache__/test_engine.cpython-313.pyc": {
-            "sha256": "09aa10dd5b6f017bd61f9f10cc3adadcf6b5294b668514a8a59a3a6d2d83b089",
-            "size_bytes": 5247
+        ".github/workflows/ci.yml": {
+            "sha256": "8f44910b47aa040c3d5c3644dd739dccf07ef5e5b1be5652ffee0f3cc21b87c2",
+            "size_bytes": 553
         }
     }
 }
